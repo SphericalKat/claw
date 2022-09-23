@@ -14,9 +14,23 @@ class HomePage extends StatelessWidget {
       ],
       builder: ((context, child, animation) {
         final tabsRouter = AutoTabsRouter.of(context);
-        
-        return CupertinoPageScaffold(
-          child: child,
+
+        return CupertinoTabScaffold(
+          tabBar: CupertinoTabBar(
+            currentIndex: tabsRouter.activeIndex,
+            onTap: tabsRouter.setActiveIndex,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.flame),
+                label: 'Hottest',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.exclamationmark_bubble),
+                label: 'Newest',
+              ),
+            ],
+          ),
+          tabBuilder: (context, index) => CupertinoPageScaffold(child: child),
         );
       }),
     );

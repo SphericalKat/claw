@@ -5,6 +5,9 @@ class HottestPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return CupertinoPageScaffold(
+      backgroundColor: const Color(0xff141414),
+      child: Container(),
+    );
   }
 }
