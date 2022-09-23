@@ -16,12 +16,13 @@ class ClawApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return CupertinoApp(
       title: 'Claw for lobste.rs',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
       home: CupertinoApp.router(
+        theme: const CupertinoThemeData(
+          brightness: Brightness.dark,
+          primaryColor: CupertinoColors.systemGreen,
+        ),
         routerDelegate: _appRouter.delegate(),
         routeInformationParser: _appRouter.defaultRouteParser(),
       ),
