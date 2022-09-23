@@ -10,13 +10,13 @@ abstract class HottestState extends Equatable {
 class HottestInitial extends HottestState {}
 
 class HottestComplete extends HottestState {
-  final List<Post> _posts;
-  const HottestComplete(this._posts);
+  final List<Post> posts;
+  const HottestComplete(this.posts);
 }
 
 class HottestFailure extends HottestState {
-  final String _message;
-  const HottestFailure(this._message);
+  final String message;
+  const HottestFailure(this.message);
 }
 
 class HottestLoading extends HottestState {}

@@ -10,4 +10,14 @@ part 'hottest_state.dart';
 class HottestCubit extends Cubit<HottestState> {
   final HottestApi _api;
   HottestCubit(this._api) : super(HottestInitial());
+
+  Future<void> getHottest() async {
+    emit(HottestLoading());
+    try {
+      final posts = await _api.getHottest();
+      emit(HottestComplete(posts));
+    } catch (e) {
+      emit(HottestFailure(e.toString()));
+    }
+  }
 }

@@ -1,6 +1,9 @@
+import 'package:claw/di/injection.dart';
+import 'package:claw/hottest/cubit/hottest_cubit.dart';
 import 'package:claw/routes/app_router.gr.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -30,7 +33,14 @@ class HomePage extends StatelessWidget {
               ),
             ],
           ),
-          tabBuilder: (context, index) => CupertinoPageScaffold(child: child),
+          tabBuilder: (context, index) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => getIt<HottestCubit>(),
+              ),
+            ],
+            child: CupertinoPageScaffold(child: child),
+          ),
         );
       }),
     );
