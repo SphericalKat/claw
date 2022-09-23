@@ -4,16 +4,16 @@ part 'user.g.dart';
 
 @JsonSerializable()
 class User {
-  String username;
-  String createdAt;
-  bool isAdmin;
-  String about;
-  bool isModerator;
-  int karma;
-  String avatarUrl;
-  String invitedByUser;
-  String? githubUsername;
-  String? twitterUsername;
+  @JsonKey(name: 'username') String username;
+  @JsonKey(name: 'created_at') String createdAt;
+  @JsonKey(name: 'is_admin') bool isAdmin;
+  @JsonKey(name: 'about') String about;
+  @JsonKey(name: 'is_moderator') bool isModerator;
+  @JsonKey(name: 'karma') int karma;
+  @JsonKey(name: 'avatar_url') String avatarUrl;
+  @JsonKey(name: 'invited_by_user') String invitedByUser;
+  @JsonKey(name: 'github_username') String? githubUsername;
+  @JsonKey(name: 'twitter_username') String? twitterUsername;
 
   User(
       {required this.username,

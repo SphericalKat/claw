@@ -21,19 +21,19 @@ class Post {
         required this.tags,
     });
 
-    String shortId;
-    String shortIdUrl;
-    DateTime createdAt;
-    String title;
-    String url;
-    int score;
-    int flags;
-    int commentCount;
-    String description;
-    String descriptionPlain;
-    String commentsUrl;
-    User submitterUser;
-    List<String> tags;
+    @JsonKey(name: 'short_id') String shortId;
+    @JsonKey(name: 'short_id_url') String shortIdUrl;
+    @JsonKey(name: 'created_at') DateTime createdAt;
+    @JsonKey(name: 'title') String title;
+    @JsonKey(name: 'url') String url;
+    @JsonKey(name: 'score') int score;
+    @JsonKey(name: 'flags') int flags;
+    @JsonKey(name: 'comment_count') int commentCount;
+    @JsonKey(name: 'description') String description;
+    @JsonKey(name: 'description_plain') String descriptionPlain;
+    @JsonKey(name: 'comments_url') String commentsUrl;
+    @JsonKey(name: 'submitter_user') User submitterUser;
+    @JsonKey(name: 'tags') List<String> tags;
 
     factory Post.fromJson(Map<String, dynamic> json) => _$PostFromJson(json);
 
