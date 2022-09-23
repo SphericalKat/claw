@@ -59,7 +59,12 @@ class _HottestPageState extends State<HottestPage> {
                             children: [
                               PostItem(post: state.posts[index]),
                               if (index != state.posts.length - 1)
-                                const Divider(),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Divider(
+                                    color: CupertinoDynamicColor.resolve(CupertinoColors.systemGrey, context),
+                                  ),
+                                ),
                             ],
                           );
                         },
