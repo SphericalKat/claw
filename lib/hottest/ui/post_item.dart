@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
 class PostItem extends StatelessWidget {
+  final Post post;
+
   const PostItem({
     super.key,
     required this.post,
   });
-
-  final Post post;
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +25,19 @@ class PostItem extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  post.title,
-                  style: CupertinoTheme.of(context).textTheme.textStyle.copyWith(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
-                      ),
+                RichText(
+                  text: TextSpan(
+                    text: post.title,
+                    style:
+                        CupertinoTheme.of(context).textTheme.textStyle.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                            ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        getIt<Logger>().d("PostItem", "Title tapped");
+                      },
+                  ),
                 ),
                 const SizedBox(height: 8),
                 SizedBox(
@@ -92,30 +99,32 @@ class PostItem extends StatelessWidget {
                       const SizedBox(width: 8),
                       RichText(
                         text: TextSpan(
-                          text: 'Submitted by ',
-                          style: CupertinoTheme.of(context)
-                              .textTheme
-                              .textStyle
-                              .copyWith(
-                                fontSize: 12,
-                              ),
-                          children: [
+                            text: 'Submitted by ',
+                            style: CupertinoTheme.of(context)
+                                .textTheme
+                                .textStyle
+                                .copyWith(
+                                  fontSize: 12,
+                                ),
+                            children: [
                               TextSpan(
-                                  style: CupertinoTheme.of(context)
-                                      .textTheme
-                                      .textStyle
-                                      .copyWith(
-                                        fontSize: 12,
-                                        color: CupertinoTheme.of(context)
-                                            .primaryColor.withAlpha((1 * 255).toInt()),
-                                      ),
+                                style: CupertinoTheme.of(context)
+                                    .textTheme
+                                    .textStyle
+                                    .copyWith(
+                                      fontSize: 12,
+                                      color: CupertinoTheme.of(context)
+                                          .primaryColor
+                                          .withAlpha((1 * 255).toInt()),
+                                    ),
                                 text: post.submitterUser.username,
-                                recognizer: TapGestureRecognizer()..onTap = () {
-                                  getIt<Logger>().d('Tapped on username ${post.submitterUser.username}');
-                                },
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    getIt<Logger>().d(
+                                        'Tapped on username ${post.submitterUser.username}');
+                                  },
                               ),
-                          ]
-                        ),
+                            ]),
                       ),
                     ],
                   ),

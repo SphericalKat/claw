@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:claw/common/models/post.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';

@@ -1,11 +1,9 @@
 import 'package:boxy/slivers.dart';
-import 'package:claw/di/injection.dart';
 import 'package:claw/hottest/cubit/hottest_cubit.dart';
 import 'package:claw/hottest/ui/post_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Divider;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:logger/logger.dart';
 
 class HottestPage extends StatefulWidget {
   const HottestPage({super.key});
@@ -64,6 +62,8 @@ class _HottestPageState extends State<HottestPage> {
                                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                                     child: Divider(
                                       color: CupertinoDynamicColor.resolve(CupertinoColors.systemGrey, context),
+                                      indent: 8,
+                                      endIndent: 8,
                                     ),
                                   ),
                               ],
@@ -100,25 +100,3 @@ class _HottestPageState extends State<HottestPage> {
     );
   }
 }
-
-// SafeArea(
-//               child: Container(
-//                 padding: const EdgeInsets.all(16),
-//                 decoration: BoxDecoration(
-//                   color: CupertinoDynamicColor.resolve(
-//                       CupertinoColors.secondarySystemGroupedBackground,
-//                       context),
-//                 ),
-//                 child: ListView.separated(
-//                   separatorBuilder: ((context, index) => const Divider(
-//                         thickness: 1.2,
-//                         color: CupertinoColors.systemGrey,
-//                       )),
-//                   itemCount: state.posts.length,
-//                   itemBuilder: (context, index) {
-//                     final post = state.posts[index];
-//                     return PostItem(post: post);
-//                   },
-//                 ),
-//               ),
-//             )
