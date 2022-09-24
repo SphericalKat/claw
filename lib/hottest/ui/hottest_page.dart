@@ -1,8 +1,7 @@
 import 'package:boxy/slivers.dart';
 import 'package:claw/hottest/cubit/hottest_cubit.dart';
-import 'package:claw/hottest/ui/post_item.dart';
+import 'package:claw/common/widgets/post_item.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show Divider;
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HottestPage extends StatefulWidget {
@@ -28,7 +27,9 @@ class _HottestPageState extends State<HottestPage> {
           var slivers = <Widget>[
             CupertinoSliverNavigationBar(
               largeTitle: const Text('Hottest'),
-              backgroundColor: CupertinoDynamicColor.resolve(CupertinoColors.systemBackground, context).withAlpha((0.6 * 255).toInt()),
+              backgroundColor: CupertinoDynamicColor.resolve(
+                      CupertinoColors.systemBackground, context)
+                  .withAlpha((0.6 * 255).toInt()),
             )
           ];
           if (state is HottestLoading || state is HottestInitial) {
@@ -41,13 +42,15 @@ class _HottestPageState extends State<HottestPage> {
               ),
             );
           } else if (state is HottestComplete) {
+            
             return SafeArea(
               child: CustomScrollView(
                 slivers: [
                   ...slivers,
                   SliverContainer(
                     background: Container(
-                      color: CupertinoDynamicColor.resolve(CupertinoColors.systemBackground, context),
+                      color: CupertinoDynamicColor.resolve(
+                          CupertinoColors.systemBackground, context),
                     ),
                     sliver: SliverPadding(
                       padding: const EdgeInsets.all(16.0),
@@ -58,7 +61,7 @@ class _HottestPageState extends State<HottestPage> {
                               children: [
                                 PostItem(post: state.posts[index]),
                                 if (index != state.posts.length - 1)
-                                  SizedBox(height: 16),
+                                  const SizedBox(height: 16),
                               ],
                             );
                           },

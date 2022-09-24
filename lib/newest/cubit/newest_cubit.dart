@@ -34,7 +34,18 @@ class NewestCubit extends Cubit<NewestState> {
 
       // save posts to isar
       await _isar.writeTxn(() async {
-        await _isar.posts.putAll(posts);
+        // get all hottest posts
+        var hottest = await _isar.posts
+            .where()
+            .isHottestEqualTo(true)
+            .shortIdProperty()
+            .findAll();
+        await _isar.posts.putAll(posts.map((e) {
+          if (hottest.contains(e.shortId)) {
+            e.isHottest = true;
+          }
+          return e;
+        }).toList());
       });
 
       var allPosts = await _isar.posts.where().sortByCreatedAt().findAll();

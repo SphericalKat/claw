@@ -16,14 +16,15 @@ class HottestCubit extends Cubit<HottestState> {
   HottestCubit(this._api, this._logger, this._isar) : super(HottestInitial());
 
   Future<void> getHottest() async {
+    if (state is HottestLoading) return;
     emit(HottestLoading());
     try {
       // first, check if we have any cached posts
       var cachedPosts =
-          await _isar.posts.where().isHottestEqualTo(true).findAll();
+          await _isar.posts.filter().isHottestEqualTo(true).findAll();
       if (cachedPosts.isNotEmpty) {
         // emit cached posts
-        emit(HottestComplete(cachedPosts));
+        emit(HottestComplete([...cachedPosts]));
       }
 
       // get latest posts from api
@@ -31,6 +32,7 @@ class HottestCubit extends Cubit<HottestState> {
 
       // save posts to isar
       await _isar.writeTxn(() async {
+
         // mark all cached posts as not hottest any longer
         for (var i = 0; i < cachedPosts.length; i++) {
           cachedPosts[i].isHottest = false;
@@ -44,7 +46,10 @@ class HottestCubit extends Cubit<HottestState> {
         }).toList());
       });
 
-      emit(HottestComplete(posts));
+      var hottestPosts =
+          await _isar.posts.filter().isHottestEqualTo(true).findAll();
+
+      emit(HottestComplete(hottestPosts));
     } catch (e) {
       _logger.e("Error fetching hottest posts", e);
       emit(HottestFailure(e.toString()));

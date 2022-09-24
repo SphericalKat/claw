@@ -1,5 +1,6 @@
 import 'package:claw/di/injection.dart';
 import 'package:claw/hottest/cubit/hottest_cubit.dart';
+import 'package:claw/newest/cubit/newest_cubit.dart';
 import 'package:claw/routes/app_router.gr.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:auto_route/auto_route.dart';
@@ -37,6 +38,9 @@ class HomePage extends StatelessWidget {
             providers: [
               BlocProvider(
                 create: (context) => getIt<HottestCubit>(),
+              ),
+              BlocProvider(
+                create: (context) => getIt<NewestCubit>(),
               ),
             ],
             child: CupertinoPageScaffold(child: child),
