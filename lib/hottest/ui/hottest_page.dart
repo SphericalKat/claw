@@ -28,7 +28,7 @@ class _HottestPageState extends State<HottestPage> {
           var slivers = <Widget>[
             CupertinoSliverNavigationBar(
               largeTitle: const Text('Hottest'),
-              backgroundColor: CupertinoDynamicColor.resolve(CupertinoColors.systemBackground, context),
+              backgroundColor: CupertinoDynamicColor.resolve(CupertinoColors.systemBackground, context).withAlpha((0.6 * 255).toInt()),
             )
           ];
           if (state is HottestLoading || state is HottestInitial) {
@@ -58,14 +58,7 @@ class _HottestPageState extends State<HottestPage> {
                               children: [
                                 PostItem(post: state.posts[index]),
                                 if (index != state.posts.length - 1)
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                    child: Divider(
-                                      color: CupertinoDynamicColor.resolve(CupertinoColors.systemGrey, context),
-                                      indent: 8,
-                                      endIndent: 8,
-                                    ),
-                                  ),
+                                  SizedBox(height: 16),
                               ],
                             );
                           },
