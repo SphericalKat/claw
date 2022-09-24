@@ -43,37 +43,39 @@ class _HottestPageState extends State<HottestPage> {
               ),
             );
           } else if (state is HottestComplete) {
-            return CustomScrollView(
-              slivers: [
-                ...slivers,
-                SliverContainer(
-                  background: Container(
-                    color: CupertinoDynamicColor.resolve(CupertinoColors.systemBackground, context),
-                  ),
-                  sliver: SliverPadding(
-                    padding: const EdgeInsets.all(16.0),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          return Column(
-                            children: [
-                              PostItem(post: state.posts[index]),
-                              if (index != state.posts.length - 1)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Divider(
-                                    color: CupertinoDynamicColor.resolve(CupertinoColors.systemGrey, context),
+            return SafeArea(
+              child: CustomScrollView(
+                slivers: [
+                  ...slivers,
+                  SliverContainer(
+                    background: Container(
+                      color: CupertinoDynamicColor.resolve(CupertinoColors.systemBackground, context),
+                    ),
+                    sliver: SliverPadding(
+                      padding: const EdgeInsets.all(16.0),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            return Column(
+                              children: [
+                                PostItem(post: state.posts[index]),
+                                if (index != state.posts.length - 1)
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                    child: Divider(
+                                      color: CupertinoDynamicColor.resolve(CupertinoColors.systemGrey, context),
+                                    ),
                                   ),
-                                ),
-                            ],
-                          );
-                        },
-                        childCount: state.posts.length,
+                              ],
+                            );
+                          },
+                          childCount: state.posts.length,
+                        ),
                       ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             );
           } else {
             slivers.add(
