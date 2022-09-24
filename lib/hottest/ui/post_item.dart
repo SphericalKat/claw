@@ -1,6 +1,9 @@
 import 'package:claw/common/models/post.dart';
+import 'package:claw/di/injection.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 class PostItem extends StatelessWidget {
   const PostItem({
@@ -24,6 +27,10 @@ class PostItem extends StatelessWidget {
               children: [
                 Text(
                   post.title,
+                  style: CupertinoTheme.of(context).textTheme.textStyle.copyWith(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
                 ),
                 const SizedBox(height: 8),
                 SizedBox(
@@ -83,14 +90,32 @@ class PostItem extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Text(
-                        'Submitted by ${post.submitterUser.username}',
-                        style: CupertinoTheme.of(context)
-                            .textTheme
-                            .textStyle
-                            .copyWith(
-                              fontSize: 12,
-                            ),
+                      RichText(
+                        text: TextSpan(
+                          text: 'Submitted by ',
+                          style: CupertinoTheme.of(context)
+                              .textTheme
+                              .textStyle
+                              .copyWith(
+                                fontSize: 12,
+                              ),
+                          children: [
+                              TextSpan(
+                                  style: CupertinoTheme.of(context)
+                                      .textTheme
+                                      .textStyle
+                                      .copyWith(
+                                        fontSize: 12,
+                                        color: CupertinoTheme.of(context)
+                                            .primaryColor.withAlpha((1 * 255).toInt()),
+                                      ),
+                                text: post.submitterUser.username,
+                                recognizer: TapGestureRecognizer()..onTap = () {
+                                  getIt<Logger>().d('Tapped on username ${post.submitterUser.username}');
+                                },
+                              ),
+                          ]
+                        ),
                       ),
                     ],
                   ),
