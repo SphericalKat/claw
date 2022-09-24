@@ -1,8 +1,10 @@
+import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
 
 @JsonSerializable()
+@embedded
 class User {
   @JsonKey(name: 'username') String username;
   @JsonKey(name: 'created_at') String createdAt;
@@ -16,14 +18,14 @@ class User {
   @JsonKey(name: 'twitter_username') String? twitterUsername;
 
   User(
-      {required this.username,
-      required this.createdAt,
-      required this.isAdmin,
-      required this.isModerator,
-      required this.about,
-      required this.karma,
-      required this.avatarUrl,
-      required this.invitedByUser,
+      {this.username = "",
+      this.createdAt = "",
+      this.isAdmin = false,
+      this.isModerator = false,
+      this.about = "",
+      this.karma = 0,
+      this.avatarUrl = "",
+      this.invitedByUser = "",
       this.githubUsername,
       this.twitterUsername,
   });
