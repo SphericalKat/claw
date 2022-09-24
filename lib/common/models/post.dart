@@ -23,6 +23,7 @@ class Post {
     required this.tags,
   });
 
+  @JsonKey(ignore: true)
   Id id = Isar.autoIncrement;
 
   @JsonKey(name: 'short_id')

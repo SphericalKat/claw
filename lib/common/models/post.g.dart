@@ -2327,10 +2327,9 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
       submitterUser:
           User.fromJson(json['submitter_user'] as Map<String, dynamic>),
       tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
-    )..id = json['id'] as int;
+    );
 
 Map<String, dynamic> _$PostToJson(Post instance) => <String, dynamic>{
-      'id': instance.id,
       'short_id': instance.shortId,
       'short_id_url': instance.shortIdUrl,
       'created_at': instance.createdAt.toIso8601String(),
