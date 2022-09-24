@@ -27,7 +27,7 @@ class Post {
   Id id = Isar.autoIncrement;
 
   @JsonKey(name: 'short_id')
-  @Index(type: IndexType.value)
+  @Index(type: IndexType.value, unique: true, replace: true)
   String shortId;
 
   @JsonKey(name: 'short_id_url')
@@ -54,6 +54,10 @@ class Post {
   User submitterUser;
   @JsonKey(name: 'tags')
   List<String> tags;
+
+  @JsonKey(ignore: true)
+  @Index(type: IndexType.value)
+  bool isHottest = false;
 
   factory Post.fromJson(Map<String, dynamic> json) => _$PostFromJson(json);
 

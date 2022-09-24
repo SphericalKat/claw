@@ -47,39 +47,44 @@ const PostSchema = CollectionSchema(
       name: r'flags',
       type: IsarType.long,
     ),
-    r'score': PropertySchema(
+    r'isHottest': PropertySchema(
       id: 6,
+      name: r'isHottest',
+      type: IsarType.bool,
+    ),
+    r'score': PropertySchema(
+      id: 7,
       name: r'score',
       type: IsarType.long,
     ),
     r'shortId': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'shortId',
       type: IsarType.string,
     ),
     r'shortIdUrl': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'shortIdUrl',
       type: IsarType.string,
     ),
     r'submitterUser': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'submitterUser',
       type: IsarType.object,
       target: r'User',
     ),
     r'tags': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'tags',
       type: IsarType.stringList,
     ),
     r'title': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'title',
       type: IsarType.string,
     ),
     r'url': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'url',
       type: IsarType.string,
     )
@@ -93,13 +98,26 @@ const PostSchema = CollectionSchema(
     r'shortId': IndexSchema(
       id: 8658437638058725694,
       name: r'shortId',
-      unique: false,
-      replace: false,
+      unique: true,
+      replace: true,
       properties: [
         IndexPropertySchema(
           name: r'shortId',
           type: IndexType.value,
           caseSensitive: true,
+        )
+      ],
+    ),
+    r'isHottest': IndexSchema(
+      id: -925480020536448879,
+      name: r'isHottest',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'isHottest',
+          type: IndexType.value,
+          caseSensitive: false,
         )
       ],
     )
@@ -150,18 +168,19 @@ void _postSerialize(
   writer.writeString(offsets[3], object.description);
   writer.writeString(offsets[4], object.descriptionPlain);
   writer.writeLong(offsets[5], object.flags);
-  writer.writeLong(offsets[6], object.score);
-  writer.writeString(offsets[7], object.shortId);
-  writer.writeString(offsets[8], object.shortIdUrl);
+  writer.writeBool(offsets[6], object.isHottest);
+  writer.writeLong(offsets[7], object.score);
+  writer.writeString(offsets[8], object.shortId);
+  writer.writeString(offsets[9], object.shortIdUrl);
   writer.writeObject<User>(
-    offsets[9],
+    offsets[10],
     allOffsets,
     UserSchema.serialize,
     object.submitterUser,
   );
-  writer.writeStringList(offsets[10], object.tags);
-  writer.writeString(offsets[11], object.title);
-  writer.writeString(offsets[12], object.url);
+  writer.writeStringList(offsets[11], object.tags);
+  writer.writeString(offsets[12], object.title);
+  writer.writeString(offsets[13], object.url);
 }
 
 Post _postDeserialize(
@@ -177,20 +196,21 @@ Post _postDeserialize(
     description: reader.readString(offsets[3]),
     descriptionPlain: reader.readString(offsets[4]),
     flags: reader.readLong(offsets[5]),
-    score: reader.readLong(offsets[6]),
-    shortId: reader.readString(offsets[7]),
-    shortIdUrl: reader.readString(offsets[8]),
+    score: reader.readLong(offsets[7]),
+    shortId: reader.readString(offsets[8]),
+    shortIdUrl: reader.readString(offsets[9]),
     submitterUser: reader.readObjectOrNull<User>(
-          offsets[9],
+          offsets[10],
           UserSchema.deserialize,
           allOffsets,
         ) ??
         User(),
-    tags: reader.readStringList(offsets[10]) ?? [],
-    title: reader.readString(offsets[11]),
-    url: reader.readString(offsets[12]),
+    tags: reader.readStringList(offsets[11]) ?? [],
+    title: reader.readString(offsets[12]),
+    url: reader.readString(offsets[13]),
   );
   object.id = id;
+  object.isHottest = reader.readBool(offsets[6]);
   return object;
 }
 
@@ -214,23 +234,25 @@ P _postDeserializeProp<P>(
     case 5:
       return (reader.readLong(offset)) as P;
     case 6:
-      return (reader.readLong(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 7:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 8:
       return (reader.readString(offset)) as P;
     case 9:
+      return (reader.readString(offset)) as P;
+    case 10:
       return (reader.readObjectOrNull<User>(
             offset,
             UserSchema.deserialize,
             allOffsets,
           ) ??
           User()) as P;
-    case 10:
-      return (reader.readStringList(offset) ?? []) as P;
     case 11:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringList(offset) ?? []) as P;
     case 12:
+      return (reader.readString(offset)) as P;
+    case 13:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -249,6 +271,60 @@ void _postAttach(IsarCollection<dynamic> col, Id id, Post object) {
   object.id = id;
 }
 
+extension PostByIndex on IsarCollection<Post> {
+  Future<Post?> getByShortId(String shortId) {
+    return getByIndex(r'shortId', [shortId]);
+  }
+
+  Post? getByShortIdSync(String shortId) {
+    return getByIndexSync(r'shortId', [shortId]);
+  }
+
+  Future<bool> deleteByShortId(String shortId) {
+    return deleteByIndex(r'shortId', [shortId]);
+  }
+
+  bool deleteByShortIdSync(String shortId) {
+    return deleteByIndexSync(r'shortId', [shortId]);
+  }
+
+  Future<List<Post?>> getAllByShortId(List<String> shortIdValues) {
+    final values = shortIdValues.map((e) => [e]).toList();
+    return getAllByIndex(r'shortId', values);
+  }
+
+  List<Post?> getAllByShortIdSync(List<String> shortIdValues) {
+    final values = shortIdValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'shortId', values);
+  }
+
+  Future<int> deleteAllByShortId(List<String> shortIdValues) {
+    final values = shortIdValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'shortId', values);
+  }
+
+  int deleteAllByShortIdSync(List<String> shortIdValues) {
+    final values = shortIdValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'shortId', values);
+  }
+
+  Future<Id> putByShortId(Post object) {
+    return putByIndex(r'shortId', object);
+  }
+
+  Id putByShortIdSync(Post object, {bool saveLinks = true}) {
+    return putByIndexSync(r'shortId', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllByShortId(List<Post> objects) {
+    return putAllByIndex(r'shortId', objects);
+  }
+
+  List<Id> putAllByShortIdSync(List<Post> objects, {bool saveLinks = true}) {
+    return putAllByIndexSync(r'shortId', objects, saveLinks: saveLinks);
+  }
+}
+
 extension PostQueryWhereSort on QueryBuilder<Post, Post, QWhere> {
   QueryBuilder<Post, Post, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
@@ -260,6 +336,14 @@ extension PostQueryWhereSort on QueryBuilder<Post, Post, QWhere> {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         const IndexWhereClause.any(indexName: r'shortId'),
+      );
+    });
+  }
+
+  QueryBuilder<Post, Post, QAfterWhere> anyIsHottest() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'isHottest'),
       );
     });
   }
@@ -461,6 +545,50 @@ extension PostQueryWhere on QueryBuilder<Post, Post, QWhereClause> {
             .addWhereClause(IndexWhereClause.lessThan(
               indexName: r'shortId',
               upper: [''],
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<Post, Post, QAfterWhereClause> isHottestEqualTo(bool isHottest) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'isHottest',
+        value: [isHottest],
+      ));
+    });
+  }
+
+  QueryBuilder<Post, Post, QAfterWhereClause> isHottestNotEqualTo(
+      bool isHottest) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isHottest',
+              lower: [],
+              upper: [isHottest],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isHottest',
+              lower: [isHottest],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isHottest',
+              lower: [isHottest],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'isHottest',
+              lower: [],
+              upper: [isHottest],
+              includeUpper: false,
             ));
       }
     });
@@ -1064,6 +1192,15 @@ extension PostQueryFilter on QueryBuilder<Post, Post, QFilterCondition> {
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Post, Post, QAfterFilterCondition> isHottestEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isHottest',
+        value: value,
       ));
     });
   }
@@ -1933,6 +2070,18 @@ extension PostQuerySortBy on QueryBuilder<Post, Post, QSortBy> {
     });
   }
 
+  QueryBuilder<Post, Post, QAfterSortBy> sortByIsHottest() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isHottest', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Post, Post, QAfterSortBy> sortByIsHottestDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isHottest', Sort.desc);
+    });
+  }
+
   QueryBuilder<Post, Post, QAfterSortBy> sortByScore() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'score', Sort.asc);
@@ -2079,6 +2228,18 @@ extension PostQuerySortThenBy on QueryBuilder<Post, Post, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Post, Post, QAfterSortBy> thenByIsHottest() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isHottest', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Post, Post, QAfterSortBy> thenByIsHottestDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isHottest', Sort.desc);
+    });
+  }
+
   QueryBuilder<Post, Post, QAfterSortBy> thenByScore() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'score', Sort.asc);
@@ -2181,6 +2342,12 @@ extension PostQueryWhereDistinct on QueryBuilder<Post, Post, QDistinct> {
     });
   }
 
+  QueryBuilder<Post, Post, QDistinct> distinctByIsHottest() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isHottest');
+    });
+  }
+
   QueryBuilder<Post, Post, QDistinct> distinctByScore() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'score');
@@ -2262,6 +2429,12 @@ extension PostQueryProperty on QueryBuilder<Post, Post, QQueryProperty> {
   QueryBuilder<Post, int, QQueryOperations> flagsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'flags');
+    });
+  }
+
+  QueryBuilder<Post, bool, QQueryOperations> isHottestProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isHottest');
     });
   }
 

@@ -19,7 +19,8 @@ class HottestCubit extends Cubit<HottestState> {
     emit(HottestLoading());
     try {
       // first, check if we have any cached posts
-      var cachedPosts = await _isar.posts.where().findAll();
+      var cachedPosts =
+          await _isar.posts.where().isHottestEqualTo(true).findAll();
       if (cachedPosts.isNotEmpty) {
         // emit cached posts
         emit(HottestComplete(cachedPosts));
@@ -30,8 +31,17 @@ class HottestCubit extends Cubit<HottestState> {
 
       // save posts to isar
       await _isar.writeTxn(() async {
-        await _isar.posts.where().deleteAll();
-        await _isar.posts.putAll(posts);
+        // mark all cached posts as not hottest any longer
+        for (var i = 0; i < cachedPosts.length; i++) {
+          cachedPosts[i].isHottest = false;
+        }
+        await _isar.posts.putAll(cachedPosts);
+
+        // set all new hottest posts
+        await _isar.posts.putAll(posts.map((e) {
+          e.isHottest = true;
+          return e;
+        }).toList());
       });
 
       emit(HottestComplete(posts));
