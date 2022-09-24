@@ -1,6 +1,5 @@
 import 'package:claw/routes/app_router.gr.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:claw/di/injection.dart';
 
 void main() {
@@ -21,7 +20,7 @@ class ClawApp extends StatelessWidget {
       home: CupertinoApp.router(
         theme: const CupertinoThemeData(
           brightness: Brightness.dark,
-          primaryColor: CupertinoColors.systemGreen,
+          primaryColor: CupertinoColors.systemYellow,
         ),
         routerDelegate: _appRouter.delegate(),
         routeInformationParser: _appRouter.defaultRouteParser(),

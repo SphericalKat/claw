@@ -1,5 +1,6 @@
 import 'package:claw/common/models/post.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class PostItem extends StatelessWidget {
   const PostItem({
@@ -11,60 +12,126 @@ class PostItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          post.title,
-          style: const TextStyle(
-            fontSize: 16,
-          ),
-        ),
-        const SizedBox(height: 8),
-        SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: 24,
-          child: ListView.separated(
-            separatorBuilder: (context, index) => const SizedBox(width: 4),
-            itemBuilder: ((context, index) {
-              return Container(
-                decoration: BoxDecoration(
-                  color: CupertinoTheme.of(context).primaryColor.withAlpha((0.3 * 255).toInt()),
-                  borderRadius: BorderRadius.circular(100),
+    return IntrinsicHeight(
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  post.title,
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                child: Column(
-                  children: [
-                    Text(
-                      post.tags[index],
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: CupertinoTheme.of(context).primaryColor,
-                      ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: 24,
+                  child: ListView.separated(
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(width: 4),
+                    itemBuilder: ((context, index) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: CupertinoTheme.of(context)
+                              .primaryColor
+                              .withAlpha((0.3 * 255).toInt()),
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 4, horizontal: 8),
+                        child: Column(
+                          children: [
+                            Text(
+                              post.tags[index],
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: CupertinoTheme.of(context).primaryColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                    itemCount: post.tags.length,
+                    scrollDirection: Axis.horizontal,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                if (post.description.isNotEmpty) ...[
+                  Text(
+                    post.description,
+                    style: const TextStyle(
+                      fontSize: 8,
                     ),
-                  ],
-                ),
-              );
-            }),
-            itemCount: post.tags.length,
-            scrollDirection: Axis.horizontal,
-          ),
-        ),
-        const SizedBox(height: 8),
-        if (post.description.isNotEmpty) ...[
-          Text(
-            post.description,
-            style: const TextStyle(
-              fontSize: 8,
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                const SizedBox(height: 8),
+                Expanded(
+                  child: Row(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: Image.network(
+                              'https://lobste.rs/${post.submitterUser.avatarUrl}'),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Submitted by ${post.submitterUser.username}',
+                        style: CupertinoTheme.of(context)
+                            .textTheme
+                            .textStyle
+                            .copyWith(
+                              fontSize: 12,
+                            ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(width: 16),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Column(
+                children: [
+                  const Icon(CupertinoIcons.heart),
+                  Text(
+                    post.score.toString(),
+                    style:
+                        CupertinoTheme.of(context).textTheme.textStyle.copyWith(
+                              fontSize: 12,
+                            ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              const Divider(),
+              Column(
+                children: [
+                  const Icon(CupertinoIcons.chat_bubble),
+                  Text(
+                    post.commentCount.toString(),
+                    style:
+                        CupertinoTheme.of(context).textTheme.textStyle.copyWith(
+                              fontSize: 12,
+                            ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ],
-        Text(
-          post.score.toString(),
-          style: const TextStyle(),
-        ),
-      ],
+      ),
     );
   }
 }
