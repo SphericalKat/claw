@@ -24,7 +24,7 @@ class HottestCubit extends Cubit<HottestState> {
           await _isar.posts.filter().isHottestEqualTo(true).findAll();
       if (cachedPosts.isNotEmpty) {
         // emit cached posts
-        emit(HottestComplete([...cachedPosts]));
+        emit(HottestComplete(cachedPosts));
       }
 
       // get latest posts from api
@@ -32,7 +32,6 @@ class HottestCubit extends Cubit<HottestState> {
 
       // save posts to isar
       await _isar.writeTxn(() async {
-
         // mark all cached posts as not hottest any longer
         for (var i = 0; i < cachedPosts.length; i++) {
           cachedPosts[i].isHottest = false;

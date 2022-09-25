@@ -13,24 +13,16 @@ class NewestCubit extends Cubit<NewestState> {
   final NewestApi _api;
   final Logger _logger;
   final Isar _isar;
-  int _page = 1;
 
   NewestCubit(this._api, this._logger, this._isar) : super(NewestInitial());
 
-  Future<void> getNewest() async {
+  Future<void> getNewest([int page = 1]) async {
     if (state is NewestLoading) return;
 
-    emit(NewestLoading());
+    emit(NewestLoading(page));
     try {
-      // first, check if we have any cached posts
-      var cachedPosts = await _isar.posts.where().sortByCreatedAt().findAll();
-      if (cachedPosts.isNotEmpty) {
-        // emit cached posts
-        emit(NewestComplete(cachedPosts));
-      }
-
       // get latest posts from api
-      final posts = await _api.getNewest(_page);
+      final posts = await _api.getNewest(page);
 
       // save posts to isar
       await _isar.writeTxn(() async {
@@ -48,11 +40,7 @@ class NewestCubit extends Cubit<NewestState> {
         }).toList());
       });
 
-      var allPosts = await _isar.posts.where().sortByCreatedAt().findAll();
-
-      _page++;
-
-      emit(NewestComplete(allPosts));
+      emit(NewestComplete(posts, page));
     } catch (e) {
       _logger.e("Error fetching newest posts", e);
       emit(NewestFailure(e.toString()));

@@ -11,12 +11,19 @@ class NewestInitial extends NewestState {}
 
 class NewestComplete extends NewestState {
   final List<Post> posts;
-  const NewestComplete(this.posts);
+  final int currentPage;
+
+  const NewestComplete(this.posts, this.currentPage);
 }
 
 class NewestFailure extends NewestState {
   final String message;
+
   const NewestFailure(this.message);
 }
 
-class NewestLoading extends NewestState {}
+class NewestLoading extends NewestState {
+  final int page;
+
+  const NewestLoading(this.page);
+}

@@ -9,8 +9,7 @@ class NewestApi {
 
   Future<List<Post>> getNewest([int page = 1]) async {
     final response = await _dio.get('/newest/page/$page.json');
-    return (response.data as List)
-      .map((d) => Post.fromJson(d))
-      .toList();
+    print('https://lobste.rs/newest/page/$page.json');
+    return (response.data as List).map((d) => Post.fromJson(d)).toList();
   }
 }
