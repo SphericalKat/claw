@@ -108,6 +108,8 @@ class PostItem extends StatelessWidget {
                                   name: post.submitterUser.username),
                               errorWidget: (context, url, error) => BoringAvatars(
                                   name: post.submitterUser.username),
+                              fadeOutDuration: const Duration(milliseconds: 400),
+                              fadeInDuration: const Duration(milliseconds: 400),
                             ),
                           ),
                         ),

@@ -9,8 +9,6 @@ class HottestApi {
 
   Future<List<Post>> getHottest() async {
     final response = await _dio.get('/hottest.json');
-    return (response.data as List)
-      .map((d) => Post.fromJson(d))
-      .toList();
+    return (response.data as List).map((d) => Post.fromJson(d)).toList();
   }
 }
