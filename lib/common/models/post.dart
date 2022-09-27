@@ -1,3 +1,4 @@
+import 'package:claw/common/models/comment.dart';
 import 'package:claw/common/models/user.dart';
 import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -21,6 +22,7 @@ class Post {
     required this.commentsUrl,
     required this.submitterUser,
     required this.tags,
+    this.comments,
   });
 
   @JsonKey(ignore: true)
@@ -54,6 +56,9 @@ class Post {
   User submitterUser;
   @JsonKey(name: 'tags')
   List<String> tags;
+  @JsonKey(name: 'comments')
+  @ignore
+  List<Comment>? comments;
 
   @JsonKey(ignore: true)
   @Index(type: IndexType.value)

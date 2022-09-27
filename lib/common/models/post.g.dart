@@ -2500,6 +2500,9 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
       submitterUser:
           User.fromJson(json['submitter_user'] as Map<String, dynamic>),
       tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
+      comments: (json['comments'] as List<dynamic>?)
+          ?.map((e) => Comment.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$PostToJson(Post instance) => <String, dynamic>{
@@ -2516,4 +2519,5 @@ Map<String, dynamic> _$PostToJson(Post instance) => <String, dynamic>{
       'comments_url': instance.commentsUrl,
       'submitter_user': instance.submitterUser,
       'tags': instance.tags,
+      'comments': instance.comments,
     };
