@@ -42,7 +42,6 @@ class _HottestPageState extends State<HottestPage> {
               ),
             );
           } else if (state is HottestComplete) {
-            
             return SafeArea(
               child: CustomScrollView(
                 slivers: [
