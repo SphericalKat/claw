@@ -1,3 +1,4 @@
+import 'package:claw/comments/cubit/comments_cubit.dart';
 import 'package:claw/di/injection.dart';
 import 'package:claw/hottest/cubit/hottest_cubit.dart';
 import 'package:claw/newest/cubit/newest_cubit.dart';
@@ -41,6 +42,9 @@ class HomePage extends StatelessWidget {
               ),
               BlocProvider(
                 create: (context) => getIt<NewestCubit>(),
+              ),
+              BlocProvider(
+                create: (context) => getIt<CommentsCubit>(),
               ),
             ],
             child: CupertinoPageScaffold(child: child),

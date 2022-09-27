@@ -12,4 +12,8 @@ class CommentsCubit extends Cubit<CommentsState> {
   final CommentsApi _api;
   final Logger _logger;
   CommentsCubit(this._api, this._logger) : super(CommentsInitial());
+
+  Future<void> getComments(String commentsUrl) async {
+    
+  }
 }
