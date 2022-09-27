@@ -19,4 +19,4 @@ class CommentsFailure extends CommentsState {
   const CommentsFailure(this.message);
 }
 
-class HottestLoading extends CommentsState {}
+class CommentsLoading extends CommentsState {}
