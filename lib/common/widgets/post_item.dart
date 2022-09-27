@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:claw/common/models/post.dart';
 import 'package:claw/di/injection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_boring_avatars/flutter_boring_avatars.dart';
 import 'package:logger/logger.dart';
 
 class PostItem extends StatelessWidget {
@@ -99,8 +101,14 @@ class PostItem extends StatelessWidget {
                           child: SizedBox(
                             width: 24,
                             height: 24,
-                            child: Image.network(
-                                'https://lobste.rs/${post.submitterUser.avatarUrl}'),
+                            child: CachedNetworkImage(
+                                imageUrl:
+                                  'https://lobste.rs/${post.submitterUser.avatarUrl}',
+                              placeholder: (context, url) => BoringAvatars(
+                                  name: post.submitterUser.username),
+                              errorWidget: (context, url, error) => BoringAvatars(
+                                  name: post.submitterUser.username),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
