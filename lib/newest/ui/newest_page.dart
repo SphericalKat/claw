@@ -37,6 +37,9 @@ class _NewestPageState extends State<NewestPage> {
     super.dispose();
   }
 
+  bool checkLastItem(int index) =>
+      index != (_pagingController.itemList?.length ?? 0) - 1;
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -59,11 +62,11 @@ class _NewestPageState extends State<NewestPage> {
                   .withAlpha((0.6 * 255).toInt()),
             )
           ];
-          if (state is NewestInitial) {
+          if (state is NewestInitial || state is NewestLoading) {
             return const Center(
               child: CupertinoActivityIndicator(),
             );
-          } else {
+          } else if (state is NewestComplete) {
             return SafeArea(
               child: CustomScrollView(
                 slivers: [
@@ -71,7 +74,9 @@ class _NewestPageState extends State<NewestPage> {
                   SliverContainer(
                     background: Container(
                       color: CupertinoDynamicColor.resolve(
-                          CupertinoColors.systemBackground, context),
+                        CupertinoColors.systemBackground,
+                        context,
+                      ),
                     ),
                     sliver: SliverPadding(
                       padding: const EdgeInsets.all(16.0),
@@ -82,9 +87,7 @@ class _NewestPageState extends State<NewestPage> {
                             return Column(
                               children: [
                                 PostItem(post: item),
-                                if (index !=
-                                    (_pagingController.itemList?.length ?? 0) -
-                                        1)
+                                if (checkLastItem(index))
                                   const SizedBox(height: 16),
                               ],
                             );
