@@ -1,6 +1,6 @@
 import 'package:boxy/slivers.dart';
-import 'package:claw/hottest/cubit/hottest_cubit.dart';
 import 'package:claw/common/widgets/post_item.dart';
+import 'package:claw/hottest/cubit/hottest_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,13 +33,8 @@ class _HottestPageState extends State<HottestPage> {
             )
           ];
           if (state is HottestLoading || state is HottestInitial) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  CupertinoActivityIndicator(),
-                ],
-              ),
+            return const Center(
+              child: CupertinoActivityIndicator(),
             );
           } else if (state is HottestComplete) {
             return SafeArea(
@@ -78,9 +73,7 @@ class _HottestPageState extends State<HottestPage> {
                 child: Center(
                   child: Text(
                     'Uh-oh! Something went wrong. 😕',
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
+                    style: TextStyle(fontSize: 20),
                   ),
                 ),
               ),

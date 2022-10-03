@@ -1,12 +1,10 @@
 import 'package:boxy/slivers.dart';
 import 'package:claw/common/models/post.dart';
 import 'package:claw/common/widgets/post_item.dart';
-import 'package:claw/di/injection.dart';
 import 'package:claw/newest/cubit/newest_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:logger/logger.dart';
 
 class NewestPage extends StatefulWidget {
   const NewestPage({super.key});
@@ -62,13 +60,8 @@ class _NewestPageState extends State<NewestPage> {
             )
           ];
           if (state is NewestInitial) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  CupertinoActivityIndicator(),
-                ],
-              ),
+            return const Center(
+              child: CupertinoActivityIndicator(),
             );
           } else {
             return SafeArea(
@@ -123,7 +116,7 @@ class _NewestPageState extends State<NewestPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: const [
-                                Text('Nothing to see here...')
+                                Text('Nothing to see here...'),
                               ],
                             ),
                           ),

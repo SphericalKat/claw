@@ -1,6 +1,6 @@
+import 'package:claw/di/injection.dart';
 import 'package:claw/routes/app_router.gr.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:claw/di/injection.dart';
 
 void main() async {
   await configureDependencies();
