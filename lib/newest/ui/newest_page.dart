@@ -62,15 +62,18 @@ class _NewestPageState extends State<NewestPage> {
                   .withAlpha((0.6 * 255).toInt()),
             )
           ];
-          if (state is NewestInitial || state is NewestLoading) {
-            return const Center(
-              child: CupertinoActivityIndicator(),
-            );
-          } else if (state is NewestComplete) {
-            return SafeArea(
-              child: CustomScrollView(
-                slivers: [
-                  ...slivers,
+
+          return SafeArea(
+            child: CustomScrollView(
+              slivers: [
+                ...slivers,
+                if (state is NewestInitial || state is NewestLoading)
+                  const SliverFillRemaining(
+                    child: Center(
+                      child: CupertinoActivityIndicator(),
+                    ),
+                  )
+                else
                   SliverContainer(
                     background: Container(
                       color: CupertinoDynamicColor.resolve(
@@ -136,13 +139,8 @@ class _NewestPageState extends State<NewestPage> {
                       ),
                     ),
                   )
-                ],
-              ),
-            );
-          }
-
-          return CustomScrollView(
-            slivers: slivers,
+              ],
+            ),
           );
         },
       ),
