@@ -8,6 +8,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boring_avatars/flutter_boring_avatars.dart';
 import 'package:logger/logger.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
 
 class PostItem extends StatelessWidget {
@@ -39,7 +40,7 @@ class PostItem extends StatelessWidget {
           ),
           child: IntrinsicHeight(
             child: Row(
-              mainAxisSize: MainAxisSize.max,
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -61,10 +62,7 @@ class PostItem extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      _ScoreCommentsCountRow(
-                        comments: post.commentCount,
-                        score: post.score,
-                      ),
+                      _LikeCount(score: post.score),
                       const SizedBox(height: 8),
                       SizedBox(
                         width: MediaQuery.of(context).size.width,
@@ -72,39 +70,14 @@ class PostItem extends StatelessWidget {
                         child: ListView.separated(
                           separatorBuilder: (context, index) =>
                               const SizedBox(width: 4),
-                          itemBuilder: ((context, index) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                color: CupertinoTheme.of(context)
-                                    .primaryColor
-                                    .withAlpha((0.3 * 255).toInt()),
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 4,
-                                horizontal: 8,
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    post.tags[index],
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: CupertinoTheme.of(context)
-                                          .primaryColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }),
+                          itemBuilder: (context, index) =>
+                              _TagsChip(tag: post.tags[index]),
                           itemCount: post.tags.length,
                           scrollDirection: Axis.horizontal,
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      if (post.description.isNotEmpty)
+                      const SizedBox(height: 12),
+                      if (post.description.isNotEmpty) ...[
                         Flexible(
                           child: Text(
                             post.descriptionPlain,
@@ -114,55 +87,65 @@ class PostItem extends StatelessWidget {
                             ),
                           ),
                         ),
-                      const SizedBox(height: 8),
-                      Expanded(
-                        child: Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: CachedNetworkImage(
-                                  imageUrl:
-                                      '$lobstersUrl/${post.submitterUser.avatarUrl}',
-                                  placeholder: (context, url) => BoringAvatars(
-                                    name: post.submitterUser.username,
-                                  ),
-                                  errorWidget: (context, url, error) =>
-                                      BoringAvatars(
-                                          name: post.submitterUser.username),
-                                  fadeOutDuration:
-                                      const Duration(milliseconds: 400),
-                                  fadeInDuration:
-                                      const Duration(milliseconds: 400),
+                        const SizedBox(height: 8),
+                      ],
+                      Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CachedNetworkImage(
+                                imageUrl:
+                                    '$lobstersUrl/${post.submitterUser.avatarUrl}',
+                                placeholder: (context, url) => BoringAvatars(
+                                  name: post.submitterUser.username,
                                 ),
+                                errorWidget: (context, url, error) =>
+                                    BoringAvatars(
+                                        name: post.submitterUser.username),
+                                fadeOutDuration:
+                                    const Duration(milliseconds: 400),
+                                fadeInDuration:
+                                    const Duration(milliseconds: 400),
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            RichText(
-                              text: TextSpan(
-                                text: 'Submitted by ',
-                                style: context.textStyleFromTheme
-                                    .copyWith(fontSize: 12),
-                                children: [
-                                  TextSpan(
-                                    style: context.textStyleFromTheme.copyWith(
-                                      fontSize: 12,
-                                      color: CupertinoTheme.of(context)
-                                          .primaryColor
-                                          .withAlpha((1 * 255).toInt()),
-                                    ),
-                                    text: post.submitterUser.username,
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () => launchPage(
-                                          post.submitterUser.username),
+                          ),
+                          const SizedBox(width: 8),
+                          RichText(
+                            text: TextSpan(
+                              text: 'Submitted by ',
+                              style: context.textStyleFromTheme
+                                  .copyWith(fontSize: 12),
+                              children: [
+                                TextSpan(
+                                  style: context.textStyleFromTheme.copyWith(
+                                    fontSize: 12,
+                                    color: CupertinoTheme.of(context)
+                                        .primaryColor
+                                        .withAlpha((1 * 255).toInt()),
                                   ),
-                                ],
-                              ),
+                                  text: post.submitterUser.username,
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () =>
+                                        launchPage(post.submitterUser.username),
+                                ),
+                                const WidgetSpan(child: SizedBox(width: 4)),
+                                TextSpan(
+                                  style: context.textStyleFromTheme.copyWith(
+                                    fontSize: 12,
+                                    color: CupertinoColors.systemGrey,
+                                  ),
+                                  text: timeago.format(post.createdAt),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () =>
+                                        launchPage(post.submitterUser.username),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       )
                     ],
                   ),
@@ -176,14 +159,49 @@ class PostItem extends StatelessWidget {
   }
 }
 
-class _ScoreCommentsCountRow extends StatelessWidget {
-  const _ScoreCommentsCountRow({
+class _TagsChip extends StatelessWidget {
+  const _TagsChip({
     Key? key,
-    required this.comments,
+    required this.tag,
+  }) : super(key: key);
+
+  final String tag;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: CupertinoTheme.of(context)
+            .primaryColor
+            .withAlpha((0.3 * 255).toInt()),
+        borderRadius: BorderRadius.circular(100),
+      ),
+      padding: const EdgeInsets.symmetric(
+        vertical: 4,
+        horizontal: 8,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            tag,
+            style: TextStyle(
+              fontSize: 12,
+              color: CupertinoTheme.of(context).primaryColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LikeCount extends StatelessWidget {
+  const _LikeCount({
+    Key? key,
     required this.score,
   }) : super(key: key);
 
-  final int comments;
   final int score;
 
   @override
@@ -192,26 +210,13 @@ class _ScoreCommentsCountRow extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Icon(
-          CupertinoIcons.heart_fill,
+          CupertinoIcons.hand_thumbsup_fill,
           size: 12,
           color: CupertinoTheme.of(context).primaryColor,
         ),
         const SizedBox(width: 4),
         Text(
           score.toString(),
-          style: context.textStyleFromTheme.copyWith(
-            fontSize: 12,
-          ),
-        ),
-        const SizedBox(width: 12),
-        Icon(
-          CupertinoIcons.chat_bubble_2_fill,
-          size: 14,
-          color: CupertinoTheme.of(context).primaryColor,
-        ),
-        const SizedBox(width: 4),
-        Text(
-          comments.toString(),
           style: context.textStyleFromTheme.copyWith(
             fontSize: 12,
           ),
