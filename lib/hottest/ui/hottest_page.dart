@@ -1,6 +1,6 @@
 import 'package:boxy/slivers.dart';
-import 'package:claw/hottest/cubit/hottest_cubit.dart';
 import 'package:claw/common/widgets/post_item.dart';
+import 'package:claw/hottest/cubit/hottest_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,20 +32,18 @@ class _HottestPageState extends State<HottestPage> {
                   .withAlpha((0.6 * 255).toInt()),
             )
           ];
-          if (state is HottestLoading || state is HottestInitial) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  CupertinoActivityIndicator(),
-                ],
-              ),
-            );
-          } else if (state is HottestComplete) {
-            return SafeArea(
-              child: CustomScrollView(
-                slivers: [
-                  ...slivers,
+
+          return SafeArea(
+            child: CustomScrollView(
+              slivers: [
+                ...slivers,
+                if (state is HottestLoading || state is HottestInitial)
+                  const SliverFillRemaining(
+                    child: Center(
+                      child: CupertinoActivityIndicator(),
+                    ),
+                  )
+                else if (state is HottestComplete)
                   SliverContainer(
                     background: Container(
                       color: CupertinoDynamicColor.resolve(
@@ -69,26 +67,17 @@ class _HottestPageState extends State<HottestPage> {
                       ),
                     ),
                   )
-                ],
-              ),
-            );
-          } else {
-            slivers.add(
-              const SliverFillRemaining(
-                child: Center(
-                  child: Text(
-                    'Uh-oh! Something went wrong. 😕',
-                    style: TextStyle(
-                      fontSize: 20,
+                else
+                  const SliverFillRemaining(
+                    child: Center(
+                      child: Text(
+                        'Uh-oh! Something went wrong. 😕',
+                        style: TextStyle(fontSize: 20),
+                      ),
                     ),
                   ),
-                ),
-              ),
-            );
-          }
-
-          return CustomScrollView(
-            slivers: slivers,
+              ],
+            ),
           );
         },
       ),

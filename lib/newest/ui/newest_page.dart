@@ -1,12 +1,10 @@
 import 'package:boxy/slivers.dart';
 import 'package:claw/common/models/post.dart';
 import 'package:claw/common/widgets/post_item.dart';
-import 'package:claw/di/injection.dart';
 import 'package:claw/newest/cubit/newest_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:logger/logger.dart';
 
 class NewestPage extends StatefulWidget {
   const NewestPage({super.key});
@@ -39,6 +37,9 @@ class _NewestPageState extends State<NewestPage> {
     super.dispose();
   }
 
+  bool checkLastItem(int index) =>
+      index != (_pagingController.itemList?.length ?? 0) - 1;
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -61,24 +62,24 @@ class _NewestPageState extends State<NewestPage> {
                   .withAlpha((0.6 * 255).toInt()),
             )
           ];
-          if (state is NewestInitial) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  CupertinoActivityIndicator(),
-                ],
-              ),
-            );
-          } else {
-            return SafeArea(
-              child: CustomScrollView(
-                slivers: [
-                  ...slivers,
+
+          return SafeArea(
+            child: CustomScrollView(
+              slivers: [
+                ...slivers,
+                if (state is NewestInitial || state is NewestLoading)
+                  const SliverFillRemaining(
+                    child: Center(
+                      child: CupertinoActivityIndicator(),
+                    ),
+                  )
+                else
                   SliverContainer(
                     background: Container(
                       color: CupertinoDynamicColor.resolve(
-                          CupertinoColors.systemBackground, context),
+                        CupertinoColors.systemBackground,
+                        context,
+                      ),
                     ),
                     sliver: SliverPadding(
                       padding: const EdgeInsets.all(16.0),
@@ -89,9 +90,7 @@ class _NewestPageState extends State<NewestPage> {
                             return Column(
                               children: [
                                 PostItem(post: item),
-                                if (index !=
-                                    (_pagingController.itemList?.length ?? 0) -
-                                        1)
+                                if (checkLastItem(index))
                                   const SizedBox(height: 16),
                               ],
                             );
@@ -123,7 +122,7 @@ class _NewestPageState extends State<NewestPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: const [
-                                Text('Nothing to see here...')
+                                Text('Nothing to see here...'),
                               ],
                             ),
                           ),
@@ -140,13 +139,8 @@ class _NewestPageState extends State<NewestPage> {
                       ),
                     ),
                   )
-                ],
-              ),
-            );
-          }
-
-          return CustomScrollView(
-            slivers: slivers,
+              ],
+            ),
           );
         },
       ),
